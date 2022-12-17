@@ -1,3 +1,14 @@
 {
-  "todos": []
+  "todos": [
+    {
+      "title": "Estudar vue.js",
+      "completed": true,
+      "id": 1
+    },
+    {
+      "title": "Estudar composition API",
+      "completed": true,
+      "id": 2
+    }
+  ]
 }

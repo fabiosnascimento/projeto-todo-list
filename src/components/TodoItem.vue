@@ -60,6 +60,9 @@ justify-center">
 </template>
 
 <script>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+
     export default {
         props: {
             todo: {
@@ -68,41 +71,51 @@ justify-center">
             }
         },
 
-        data() {
-            return {
-                title: this.todo.title,
-                isCompleted: this.todo.completed
-            }
-        },
+        setup(props) {
+            const store = useStore()
+            const title = ref(props.todo.title)
+            const isCompleted = ref(props.todo.completed)
 
-         methods: {
-            onTitleChange() {
-                if(!this.title) {
+            // On delete
+            const onDelete = () => {
+                store.dispatch('deleteTodo', props.todo.id)
+            }
+
+            // Update todo
+            const updateTodo = () => {
+                const payload = {
+                    id: props.todo.id,
+                    data: {
+                        title: title.value,
+                        completed: isCompleted.value
+                    }
+                }
+                store.dispatch('updateTodo', payload)
+            }
+
+            // On title change
+            const onTitleChange = () => {
+                if(!title.value) {
                     return;
                 }
 
-                this.updateTodo()
-            },
-
-            updateTodo() {
-                const payload = {
-                    id: this.todo.id,
-                    data: {
-                        title: this.title,
-                        completed: this.isCompleted
-                    }
-                }
-                this.$store.dispatch('updateTodo', payload)
-            },
-
-            onCheckClick() {
-                this.isCompleted = !this.isCompleted
-                this.updateTodo()
-            },
-
-            onDelete() {
-                this.$store.dispatch('deleteTodo', this.todo.id)
+                updateTodo()
             }
-         },
+
+            // On check click
+            const onCheckClick = () => {
+                isCompleted.value = !isCompleted.value
+
+                updateTodo()
+            }
+
+            return {
+                title,
+                isCompleted,
+                onDelete,
+                onTitleChange,
+                onCheckClick
+            }
+        },
     }
 </script>
